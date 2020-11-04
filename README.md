@@ -1,44 +1,34 @@
-# pic2animation
+# 基于DeepFake First Order Motion的图片转动画
+
+> 一个 Electron + Vue + Python 项目
+
+**多媒体大作业**
 
 
+## 食用方法
 
-> An electron-vue project
-
-
-# electron-quick-start
-
-**Clone and run for a quick way to see Electron in action.**
-
-This is a minimal Electron application based on the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start) within the Electron documentation.
-
-**Use this app along with the [Electron API Demos](https://electronjs.org/#get-started) app for API code examples to help you get started.**
-
-A basic Electron application needs just these files:
-
-- `package.json` - Points to the app's main file and lists its details and dependencies.
-- `main.js` - Starts the app and creates a browser window to render HTML. This is the app's **main process**.
-- `index.html` - A web page to render. This is the app's **renderer process**.
-
-You can learn more about each of these components within the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start).
-
-## To Use
-
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+ 你需要已安装好 [Git](https://git-scm.com) 和 [Node.js](https://nodejs.org/en/download/) (其中包括了 [npm](http://npmjs.com)) 在命令行中运行：
 
 ```bash
-# Clone this repository
+# 克隆这个仓库
 git clone https://github.com/electron/electron-quick-start
-# Go into the repository
+
+# 进入项目文件夹
 cd electron-quick-start
-# Install dependencies
+
+# 安装依赖
 npm install
-# Run the app
-npm start
+
+# 在 localhost:9080 本地启动
+npm run dev
+
+# 打包为electron应用
+npm run build
 ```
 
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
 
-## Resources for Learning Electron
+
+## Electron相关学习资料
 
 - [electronjs.org/docs](https://electronjs.org/docs) - all of Electron's documentation
 - [electronjs.org/community#boilerplates](https://electronjs.org/community#boilerplates) - sample starter apps created by the community
@@ -47,30 +37,10 @@ Note: If you're using Linux Bash for Windows, [see this guide](https://www.howto
 - [electron/electron-api-demos](https://github.com/electron/electron-api-demos) - an Electron app that teaches you how to use Electron
 - [hokein/electron-sample-apps](https://github.com/hokein/electron-sample-apps) - small demo apps for the various Electron APIs
 
-## License
+## 开源协议
 
-[CC0 1.0 (Public Domain)](LICENSE.md)
+ - [CC0 1.0 (Public Domain)](LICENSE.md)
 
-
-
-#### Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:9080
-npm run dev
-
-# build electron application for production
-npm run build
-
-
-# lint all JS/Vue component files in `src/`
-npm run lint
-
-```
-
----
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+ - 本项目由 [electron-vue](https://github.com/SimulatedGREG/electron-vue) 生成  
+ - 脚手架工具： [vue-cli](https://github.com/vuejs/vue-cli).   
+ - 查看相关文档 [点击这里](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
