@@ -1,13 +1,11 @@
 # 基于DeepFake First Order Motion的图片转动画
 
-> 一个 Electron + Vue + Python 项目
-
-**多媒体大作业**
-
+> 多媒体大作业，一个 Electron + Vue + Python 项目
 
 ## 食用方法
 
- 你需要已安装好 [Git](https://git-scm.com) 和 [Node.js](https://nodejs.org/en/download/) (其中包括了 [npm](http://npmjs.com)) 在命令行中运行：
+ 你的电脑需要安装好 [Git](https://git-scm.com) 和 [Node.js](https://nodejs.org/en/download/) (其中包括了 [npm](http://npmjs.com))   
+ 在命令行中运行：
 
 ```bash
 # 克隆这个仓库

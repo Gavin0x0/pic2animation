@@ -1,11 +1,22 @@
 <template>
   <div id="wrapper">
+    <h1>基于DeepFake First Order Motion的图片转动画项目</h1>
+    <hr>
     <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
     <main>
       <div class="left-side">
         <span class="title">
-          Welcome to your new project!
+          选择用于生成动画的图片
+          <h6>五官清晰的正脸图片生成效果最佳</h6>
         </span>
+        <div class="img-upload">
+        
+        <input type="file" id="myimg" @change="chooseFile($event)" accept="image/*" style="display: none" >
+        <label for="myimg">
+            <img src="~@/assets/face.png" alt="img" />
+        </label>
+
+        </div>
         <system-information></system-information>
       </div>
 
@@ -31,13 +42,22 @@
 
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
-
+  
   export default {
     name: 'landing-page',
-    components: { SystemInformation },
+    components: {SystemInformation},
+    props: {'imageSrc': [String]},
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
+      },
+      // 图片选择组件
+      chooseFile (e) {
+        var currentImg = e.target.nextElementSibling.childNodes[0]
+        currentImg.setAttribute('src', window.URL.createObjectURL(e.target.files[0]))
+        currentImg.onload = function () {
+          window.URL.revokeObjectURL(this.src)
+        }
       }
     }
   }
@@ -45,15 +65,12 @@
 
 <style>
   @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
-
   * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
   }
-
   body { font-family: 'Source Sans Pro', sans-serif; }
-
   #wrapper {
     background:
       radial-gradient(
@@ -68,8 +85,9 @@
 
   #logo {
     height: auto;
+    margin-top: 20px;
     margin-bottom: 20px;
-    width: 420px;
+    width: 200px;
   }
 
   main {
@@ -108,6 +126,40 @@
   }
 
   .doc button {
+    font-size: .8em;
+    cursor: pointer;
+    outline: none;
+    padding: 0.75em 2em;
+    border-radius: 2em;
+    display: inline-block;
+    color: #fff;
+    background-color: #4fc08d;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+    border: 1px solid #4fc08d;
+  }
+  .img-upload button {
+    font-size: .8em;
+    cursor: pointer;
+    outline: none;
+    padding: 0.75em 2em;
+    border-radius: 2em;
+    display: inline-block;
+    color: #fff;
+    background-color: #4fc08d;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+    border: 1px solid #4fc08d;
+  }
+
+  label img{
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 200px;
+  }
+
+  input button {
     font-size: .8em;
     cursor: pointer;
     outline: none;
