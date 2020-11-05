@@ -9,7 +9,7 @@
           选择用于生成动画的图片
           <h6>五官清晰的正脸图片生成效果最佳</h6>
         </span>
-        <h4>{{'图片地址:'+imgpath}}</h4>
+        
         <div class="img-upload">
           <input
             type="file"
@@ -21,6 +21,7 @@
           <label for="myimg">
             <img src="~@/assets/face.png" alt="img" />
           </label>
+          <h4>{{'图片地址 : '+imgpath}}</h4>
         </div>
         <system-information></system-information>
       </div>
@@ -63,7 +64,7 @@
           </p>
           <button
             @click="
-              open('https://simulatedgreg.gitbooks.io/electron-vue/content/')
+              general
             "
           >
             Read the Docs</button
@@ -116,14 +117,49 @@ export default {
     // 图片选择组件
     chooseFile (e) {
       var currentImg = e.target.nextElementSibling.childNodes[0]
-      var currentPath = window.URL.createObjectURL(e.target.files[0])
       currentImg.setAttribute(
         'src', window.URL.createObjectURL(e.target.files[0])
       )
-      this.imgpath = currentPath
+      // 获取图片路径
+      const files = e.target.files
+      const file = files[0]
+      const path = file.path
+      console.log(path)
+      this.imgpath = path
       currentImg.onload = function () {
         window.URL.revokeObjectURL(this.src)
       }
+    },
+    // 控制台调用Python
+    general () {
+      const path = require('path')
+      // Python脚本和资源模型的路径
+      let target = path.join(__dirname, '../python/image_animation.py')
+      let myvidoe = path.join(__dirname, '../python/1.mp4')
+      let checkpoints = path.join(__dirname, '../python/checkpoints/vox-cpk.pth.tar')
+      console.log(target)
+      // 开启子进程
+      var childProcess = require('child_process')
+      const process = childProcess.exec('cmd', {stdio: 'pipe'})
+      // 编写命令
+      let command = 'python ' + target + ' -i ' + this.imgpath + ' -c ' + checkpoints + ' -v ' + myvidoe
+      process.stdin.write('activate base\n')
+      process.stdin.write(command + '\n')
+      process.stdin.end()
+      console.log(command)
+      // 获取控制台输出
+      process.stdout.on('data', function (data) {
+        console.log('out:' + data)
+      })
+      process.stderr.on('data', (data) => {
+        console.log('err:' + data)
+      })
+      process.on('close', function (code) {
+        console.log('close code : ' + code)
+      })
+      process.on('exit', (code) => {
+        console.log('exit code : ' + code)
+      })
     }
   }
 }
@@ -159,7 +195,7 @@ body {
 
 main {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 main > div {
@@ -169,12 +205,13 @@ main > div {
 .left-side {
   display: flex;
   flex-direction: column;
+  width: 30px;
+  padding-right: 5px;
 }
 
 .middle-side {
   display: flex;
   flex-direction: column;
-  margin-left: 5%;
   margin-right: 5%;
   
 }
