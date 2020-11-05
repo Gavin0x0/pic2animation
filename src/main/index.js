@@ -23,9 +23,14 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 600,
     useContentSize: true,
-    width: 1000
+    width: 1200,
+    autoHideMenuBar: false
+    // // 关闭同源策略访问本地文件
+    // webPreferences: {
+    //   webSecurity: false
+    // }
   })
 
   mainWindow.loadURL(winURL)
