@@ -65,7 +65,11 @@ else:
 # 图像压缩
 source_image = imageio.imread(source_path)
 source_image = resize(source_image, (256, 256))[..., :3]
+# 当前文件位置
 currPath = os.path.dirname(__file__)
+# 当前文件绝对路径
+asbPath = os.path.abspath(__file__)
+
 generator, kp_detector = load_checkpoints(
     config_path=currPath+'/config/vox-256.yaml', checkpoint_path=checkpoint_path)
 # 检查输出文件夹
@@ -140,7 +144,9 @@ video_add_mp3(file_name=currPath+'/output/'+filename,
 
 if os.path.exists(currPath+'/output/'+finalname):
     if os.path.getsize(currPath+'/output/'+finalname)>1024*100:
-        print('python: finish')
+        print('python:finish\n')
+        # 返回一个视频路径
+        print('finalvideo:'+asbPath+'/../output/'+finalname)
     else:
         print('python: failed')
 else:

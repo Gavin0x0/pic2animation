@@ -26,11 +26,11 @@ function createWindow () {
     height: 800,
     useContentSize: true,
     width: 1500,
-    autoHideMenuBar: false
-    // // 关闭同源策略访问本地文件
-    // webPreferences: {
-    //   webSecurity: false
-    // }
+    autoHideMenuBar: false,
+    // 关闭同源策略访问本地文件
+    webPreferences: {
+      webSecurity: false
+    }
   })
 
   mainWindow.loadURL(winURL)

@@ -65,7 +65,10 @@
           >
             开始生成</button
           ><br /><br />
+
         </div>
+        <video :src="videopath" width="200" height="auto" controls>您的电脑不支持video标签
+        </video>
         <h5>{{'output:'+commandMsg.output}}</h5>
         <h5>{{'err:'+commandMsg.err}}</h5>
         <h5>{{'closecode:'+commandMsg.closecode}}</h5>
@@ -74,7 +77,7 @@
     </main>
   </div>
 </template>
-
+<script src="./video_tool.js"></script>
 <script>
 import SystemInformation from './LandingPage/SystemInformation'
 
@@ -85,7 +88,7 @@ export default {
     return {
       currVideoId: 0,
       imgpath: 'null',
-      videopath: 'null',
+      videopath: 'D:' + '\\360MoveData\\Users\\chen6\\Desktop\\vue-electron\\pic2animation\\src\\renderer\\python\\Inputs\\1.mp4',
       commandMsg: {
         output: '',
         err: '',
@@ -137,6 +140,7 @@ export default {
       // Python脚本和资源模型的路径
       let targetVideoPath = path.join(__dirname, this.videopath)
       let target = path.join(__dirname, '../python/image_animation.py')
+      let testTarget = path.join(__dirname, '../python/test.py')
       let checkpoints = path.join(__dirname, '../python/checkpoints/vox-cpk.pth.tar')
       console.log(target)
       // 开启子进程
@@ -144,7 +148,9 @@ export default {
       const process = childProcess.exec('cmd', {stdio: 'pipe'})
       // 编写命令
       let command = 'python ' + target + ' -i ' + this.imgpath + ' -c ' + checkpoints + ' -v ' + targetVideoPath
+      let testCmd = 'python ' + testTarget
       process.stdin.write('activate base\n')
+      process.stdin.write(testCmd + '\n')
       process.stdin.write(command + '\n')
       process.stdin.end()
       console.log(command)
@@ -152,6 +158,16 @@ export default {
       process.stdout.on('data', (out) => {
         console.log('out:' + out)
         this.commandMsg.output = out
+        let msg = out.split(':')
+        if (msg[0] === 'python') {
+          if (msg[1] === 'finish') {
+            // 视频生成完成
+          }
+        }
+        // 获取到生成的视频的路径
+        if (msg[0] === 'finalvideo') {
+          this.videopath = msg[1] + ':' + msg[2]
+        }
       })
       process.stderr.on('data', (err) => {
         console.log('err:' + err)
@@ -165,7 +181,12 @@ export default {
         console.log('exit code : ' + code)
         this.commandMsg.exitcode = code
       })
+    },
+    playVideo () {
+      var vdo = document.getElementById('videoPlay')
+      vdo.play()
     }
+
   }
 }
 </script>
