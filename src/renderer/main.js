@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
-import { Table, TableColumn, Popover, Tag, Button } from 'element-ui'
+import { Table, TableColumn, Popover, Tag, Button, Progress } from 'element-ui'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -13,6 +13,7 @@ Vue.component(TableColumn.name, TableColumn)
 Vue.component(Popover.name, Popover)
 Vue.component(Tag.name, Tag)
 Vue.component(Button.name, Button)
+Vue.component(Progress.name, Progress)
 /* eslint-disable no-new */
 new Vue({
   components: { App },

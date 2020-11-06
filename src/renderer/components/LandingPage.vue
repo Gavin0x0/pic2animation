@@ -20,7 +20,7 @@
           <label for="myimg">
             <img src="~@/assets/face.png" alt="img" />
           </label>
-          <h4>{{'图片地址 : '+imgpath}}</h4>
+          
         </div>
         <system-information></system-information>
       </div>
@@ -49,7 +49,7 @@
           </el-table>
         </div>
         <br /><br />
-        <h4>{{'模板地址 : '+videopath}}</h4>
+        
       </div>
       <div class="right-side">
         <div class="general">
@@ -58,21 +58,19 @@
             视频生成速度由GPU性能决定，若环境中没有配置好CUDA则无法加速渲染，由GPU处理所需时长3-5分钟不等，若用CPU处理则需几小时。
           </p>
           <br />
-          <button
+        </div>
+        <div class="output-container">
+        <button
             @click="
               general
             "
           >
             开始生成</button
           ><br /><br />
-
+        <el-progress v-show="ifrunning" type="circle" :percentage="progress" :status="progressStatus" :show-text="true"></el-progress>
+        <video v-show="iffinished" :src="videopath" width="200" height="auto" controls >您的电脑不支持video标签</video>
         </div>
-        <video :src="videopath" width="200" height="auto" controls>您的电脑不支持video标签
-        </video>
-        <h5>{{'output:'+commandMsg.output}}</h5>
-        <h5>{{'err:'+commandMsg.err}}</h5>
-        <h5>{{'closecode:'+commandMsg.closecode}}</h5>
-        <h5>{{'exitcode:'+commandMsg.exitcode}}</h5>
+        
       </div>
     </main>
   </div>
@@ -86,6 +84,10 @@ export default {
   components: { SystemInformation },
   data () {
     return {
+      ifrunning: false,
+      iffinished: false,
+      progress: 0,
+      progressStatus: ' ',
       currVideoId: 0,
       imgpath: 'null',
       videopath: 'D:' + '\\360MoveData\\Users\\chen6\\Desktop\\vue-electron\\pic2animation\\src\\renderer\\python\\Inputs\\1.mp4',
@@ -136,6 +138,7 @@ export default {
     },
     // 控制台调用Python
     general () {
+      this.ifrunning = true
       const path = require('path')
       // Python脚本和资源模型的路径
       let targetVideoPath = path.join(__dirname, this.videopath)
@@ -157,11 +160,16 @@ export default {
       // 获取控制台输出
       process.stdout.on('data', (out) => {
         console.log('out:' + out)
+        console.log('推了一下进度条！')
+        this.progress += 5
         this.commandMsg.output = out
         let msg = out.split(':')
         if (msg[0] === 'python') {
           if (msg[1] === 'finish') {
             // 视频生成完成
+            this.progress = 100
+            this.progressStatus = 'success'
+            this.iffinished = true
           }
         }
         // 获取到生成的视频的路径
@@ -170,7 +178,7 @@ export default {
         }
       })
       process.stderr.on('data', (err) => {
-        console.log('err:' + err)
+        // console.log('err:' + err)
         this.commandMsg.err = err
       })
       process.on('close', (closecode) => {
@@ -264,7 +272,12 @@ main > div {
   display: flex;
   flex-direction: column;
   margin-right: 5%;
-  
+}
+.output-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;    
 }
 
 .music-list{
@@ -294,7 +307,7 @@ main > div {
   margin-bottom: 10px;
 }
 
-.general button {
+.output-container button {
   font-size: 1.2em;
   font-family: 'Noto Sans SC', sans-serif;
   cursor: pointer;

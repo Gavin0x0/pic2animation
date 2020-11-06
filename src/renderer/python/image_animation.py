@@ -144,8 +144,9 @@ video_add_mp3(file_name=currPath+'/output/'+filename,
 
 if os.path.exists(currPath+'/output/'+finalname):
     if os.path.getsize(currPath+'/output/'+finalname)>1024*100:
-        print('python:finish\n')
+        print('python:finish')
         # 返回一个视频路径
+        time.sleep(2)
         print('finalvideo:'+asbPath+'/../output/'+finalname)
     else:
         print('python: failed')
