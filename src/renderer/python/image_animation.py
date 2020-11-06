@@ -1,5 +1,6 @@
 import imageio
 import torch
+import time
 from tqdm import tqdm
 from animate import normalize_kp
 from demo import load_checkpoints
@@ -27,7 +28,6 @@ def video2mp3(file_name):
     print(cmd)
     subprocess.call(cmd, shell=True)
 
-
 def video_add_mp3(file_name, mp3_file):
     """
      视频添加音频
@@ -40,7 +40,6 @@ def video_add_mp3(file_name, mp3_file):
                     + ' -i ' + mp3_file + ' -strict -2 -f mp4 '
                     + outfile_name + ' -y', shell=True)
 
-
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--input_image", required=True,
                 help="Path to image to animate")
@@ -49,47 +48,43 @@ ap.add_argument("-v", "--input_video", required=False,
                 help="Path to video input")
 
 args = vars(ap.parse_args())
-
-print("[INFO] loading source image and checkpoint...")
+# 带时间的输出文件名 11_06_20_51_59_output.mp4
+filename = time.strftime("%m_%d_%H_%M_%S_output.mp4", time.localtime())
+print("[INFO]  正在加载模型和资源图像...")
 source_path = args['input_image']
 checkpoint_path = args['checkpoint']
 if args['input_video']:
     video_path = args['input_video']
 else:
-    video_path = None
+    print("[ERROR] 视频模板不存在!")
+# 图像压缩
 source_image = imageio.imread(source_path)
 source_image = resize(source_image, (256, 256))[..., :3]
-
 currPath = os.path.dirname(__file__)
 generator, kp_detector = load_checkpoints(
     config_path=currPath+'/config/vox-256.yaml', checkpoint_path=checkpoint_path)
-
-if not os.path.exists('output'):
-    os.mkdir('output')
-
+# 检查输出文件夹
+if not os.path.exists(currPath+'/output'):
+    os.mkdir(currPath+'/output')
 
 relative = True
 adapt_movement_scale = True
 cpu = False
-# 如果存在视频路径就加载视频，否则启动摄像头
+# 如果存在视频路径就加载视频
 if video_path:
     cap = cv2.VideoCapture(video_path)
-    print("[INFO] Loading video from the given path")
+    print("[INFO] 正在加载视频模板...")
 else:
-    cap = cv2.VideoCapture(0)
-    print("[INFO] Initializing front camera...")
+    print("[ERROR] 视频模板不存在!")
 
 fps = cap.get(cv2.CAP_PROP_FPS)
 size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
         int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
-
 video2mp3(file_name=video_path)
 
-
 fourcc = cv2.VideoWriter_fourcc('M', 'P', 'E', 'G')
-#out1 = cv2.VideoWriter('output/test.avi', fourcc, fps, (256*3 , 256), True)
-out1 = cv2.VideoWriter('output/test.mp4', fourcc, fps, size, True)
+out1 = cv2.VideoWriter(currPath+'/output/'+filename, fourcc, fps, size, True)
 
 cv2_source = cv2.cvtColor(source_image.astype('float32'), cv2.COLOR_BGR2RGB)
 with torch.no_grad():
@@ -104,24 +99,14 @@ with torch.no_grad():
         ret, frame = cap.read()
         frame = cv2.flip(frame, 1)
         if ret == True:
-
-            if not video_path:
-                x = 143
-                y = 87
-                w = 322
-                h = 322
-                frame = frame[y:y+h, x:x+w]
             frame1 = resize(frame, (256, 256))[..., :3]
-
             if count == 0:
                 source_image1 = frame1
                 source1 = torch.tensor(source_image1[np.newaxis].astype(
                     np.float32)).permute(0, 3, 1, 2)
                 kp_driving_initial = kp_detector(source1)
-
             frame_test = torch.tensor(
                 frame1[np.newaxis].astype(np.float32)).permute(0, 3, 1, 2)
-
             driving_frame = frame_test
             if not cpu:
                 driving_frame = driving_frame.cuda()
@@ -138,21 +123,12 @@ with torch.no_grad():
             im = np.transpose(
                 out['prediction'].data.cpu().numpy(), [0, 2, 3, 1])[0]
             im = cv2.cvtColor(im, cv2.COLOR_RGB2BGR)
-            #joinedFrame = np.concatenate((cv2_source,im,frame1),axis=1)
-            #joinedFrame = np.concatenate((cv2_source,im,frame1),axis=1)
-
-            # cv2.imshow('Test',joinedFrame)
-            # out1.write(img_as_ubyte(joinedFrame))
             out1.write(img_as_ubyte(im))
             count += 1
-#            if cv2.waitKey(20) & 0xFF == ord('q'):
-#                break
         else:
             break
-
     cap.release()
     out1.release()
     cv2.destroyAllWindows()
-
-video_add_mp3(file_name='output/test.mp4',
+video_add_mp3(file_name=currPath+'/output/'+filename,
               mp3_file=video_path.split('.')[0] + '.mp3')

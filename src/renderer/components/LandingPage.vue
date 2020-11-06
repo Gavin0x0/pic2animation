@@ -42,7 +42,7 @@
               <template slot-scope="scope">
                 <el-button
                   size="mini"
-                  :type="currVideoId==scope.row.id?'primary':'nomal'"
+                  :type="currVideoId==scope.row.id?'success':'nomal'"
                   @click="selectVideo(scope.$index, scope.row)">{{currVideoId==scope.row.id?'已选':'选择'}}</el-button>
               </template>
             </el-table-column>
@@ -66,10 +66,10 @@
             开始生成</button
           ><br /><br />
         </div>
-        <h5>{{'output:'+command.output}}</h5>
-        <h5>{{'err:'+command.err}}</h5>
-        <h5>{{'closecode:'+command.closecode}}</h5>
-        <h5>{{'exitcode:'+command.exitcode}}</h5>
+        <h5>{{'output:'+commandMsg.output}}</h5>
+        <h5>{{'err:'+commandMsg.err}}</h5>
+        <h5>{{'closecode:'+commandMsg.closecode}}</h5>
+        <h5>{{'exitcode:'+commandMsg.exitcode}}</h5>
       </div>
     </main>
   </div>
@@ -86,11 +86,11 @@ export default {
       currVideoId: 0,
       imgpath: 'null',
       videopath: 'null',
-      command: {
+      commandMsg: {
         output: '',
         err: '',
-        closecode: 0,
-        exitcode: 0
+        closecode: 6,
+        exitcode: 6
       },
       videoData: [{
         id: 1,
@@ -149,21 +149,21 @@ export default {
       process.stdin.end()
       console.log(command)
       // 获取控制台输出
-      process.stdout.on('data', function (data) {
-        console.log('out:' + data)
-        this.command.output = data
+      process.stdout.on('data', (out) => {
+        console.log('out:' + out)
+        this.commandMsg.output = out
       })
-      process.stderr.on('data', (data) => {
-        console.log('err:' + data)
-        this.command.err = data
+      process.stderr.on('data', (err) => {
+        console.log('err:' + err)
+        this.commandMsg.err = err
       })
-      process.on('close', function (code) {
-        console.log('close code : ' + code)
-        this.command.closecode = code
+      process.on('close', (closecode) => {
+        console.log('close code : ' + closecode)
+        this.commandMsg.closecode = closecode
       })
       process.on('exit', (code) => {
         console.log('exit code : ' + code)
-        this.command.exitcode = code
+        this.commandMsg.exitcode = code
       })
     }
   }
@@ -219,6 +219,21 @@ main > div {
   flex-direction: column;
   margin-right: 5%;
   max-width: 400px;
+}
+.el-button:focus, .el-button:hover {
+    color: #4fc08d;
+    border-color: #6dc4a0;
+    background-color: #ecfff7;
+}
+.el-button--success {
+    color: #FFF;
+    background-color: #4fc08d;
+    border-color: #4fc08d;
+}
+.el-button--success:focus, .el-button--success:hover {
+    background: #5fc798;
+    border-color:#5fc798;
+    color: #FFF;
 }
 .right-side {
   display: flex;
