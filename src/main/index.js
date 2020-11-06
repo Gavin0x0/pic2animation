@@ -23,9 +23,9 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 600,
+    height: 800,
     useContentSize: true,
-    width: 1200,
+    width: 1400,
     autoHideMenuBar: false
     // // 关闭同源策略访问本地文件
     // webPreferences: {

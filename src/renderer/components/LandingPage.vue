@@ -55,30 +55,23 @@
         </div>
       </div>
       <div class="right-side">
-        <div class="doc">
-          <div class="title">Getting Started</div>
+        <div class="general">
+          <div class="title">立即开始</div>
           <p>
-            electron-vue comes packed with detailed documentation that covers
-            everything from internal configurations, using the project
-            structure, building your application, and so much more.
+            阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭
           </p>
           <button
             @click="
               general
             "
           >
-            Read the Docs</button
+            开始生成</button
           ><br /><br />
         </div>
-        <div class="doc">
-          <div class="title alt">Other Documentation</div>
-          <button class="alt" @click="open('https://electron.atom.io/docs/')">
-            Electron
-          </button>
-          <button class="alt" @click="open('https://vuejs.org/v2/guide/')">
-            Vue.js
-          </button>
-        </div>
+        <h5>{{'output:'+command.output}}</h5>
+        <h5>{{'err:'+command.err}}</h5>
+        <h5>{{'closecode:'+command.closecode}}</h5>
+        <h5>{{'exitcode:'+command.exitcode}}</h5>
       </div>
     </main>
   </div>
@@ -93,6 +86,12 @@ export default {
   data () {
     return {
       imgpath: 'null',
+      command: {
+        output: '',
+        err: '',
+        closecode: 0,
+        exitcode: 0
+      },
       tableData: [{
         id: 1,
         name: 'Unravel',
@@ -150,15 +149,19 @@ export default {
       // 获取控制台输出
       process.stdout.on('data', function (data) {
         console.log('out:' + data)
+        this.command.output = data
       })
       process.stderr.on('data', (data) => {
         console.log('err:' + data)
+        this.command.err = data
       })
       process.on('close', function (code) {
         console.log('close code : ' + code)
+        this.command.closecode = code
       })
       process.on('exit', (code) => {
         console.log('exit code : ' + code)
+        this.command.exitcode = code
       })
     }
   }
@@ -166,14 +169,14 @@ export default {
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300&display=swap");
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 body {
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
 }
 #wrapper {
   background: radial-gradient(
@@ -215,6 +218,12 @@ main > div {
   margin-right: 5%;
   
 }
+.right-side {
+  display: flex;
+  flex-direction: column;
+  margin-right: 5%;
+  
+}
 
 .music-list{
   margin-top: 20px;
@@ -239,12 +248,12 @@ main > div {
   margin-bottom: 10px;
 }
 
-.doc p {
+.general p {
   color: black;
   margin-bottom: 10px;
 }
 
-.doc button {
+.general button {
   font-size: 0.8em;
   cursor: pointer;
   outline: none;
@@ -292,7 +301,7 @@ input button {
   border: 1px solid #4fc08d;
 }
 
-.doc button.alt {
+.general button.alt {
   color: #42b983;
   background-color: transparent;
 }

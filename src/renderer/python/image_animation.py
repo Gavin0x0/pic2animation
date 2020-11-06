@@ -23,7 +23,7 @@ def video2mp3(file_name):
     :return:
     """
     outfile_name = file_name.split('.')[0] + '.mp3'
-    cmd = 'ffmpeg -i ' + file_name + ' -f mp3 ' + outfile_name
+    cmd = 'ffmpeg -i ' + file_name + ' -f mp3 ' + outfile_name + ' -y'
     print(cmd)
     subprocess.call(cmd, shell=True)
 
@@ -38,7 +38,7 @@ def video_add_mp3(file_name, mp3_file):
     outfile_name = file_name.split('.')[0] + '-f.mp4'
     subprocess.call('ffmpeg -i ' + file_name
                     + ' -i ' + mp3_file + ' -strict -2 -f mp4 '
-                    + outfile_name, shell=True)
+                    + outfile_name + ' -y', shell=True)
 
 
 ap = argparse.ArgumentParser()
