@@ -1,6 +1,10 @@
 # 基于DeepFake First Order Motion的图片转动画
 
 > 多媒体大作业，一个 Electron + Vue + Python 项目
+> 
+## 界面部分
+ - 界面用了elementUI的部分组件，好看即正义🤪
+![运行界面.png](https://tva1.sinaimg.cn/large/007e6d0Xgy1gkg0e7ozozj31db0ljgr8.jpg)
 
 ## 食用方法
 
