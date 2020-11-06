@@ -42,3 +42,7 @@ npm run build
  - 本项目由 [electron-vue](https://github.com/SimulatedGREG/electron-vue) 生成  
  - 脚手架工具： [vue-cli](https://github.com/vuejs/vue-cli).   
  - 查看相关文档 [点击这里](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+ - 一阶运动模型原项目
+    * [AliaksandrSiarohin](https://github.com/AliaksandrSiarohin/first-order-model)
+ - 原项目的视频讲解 <br/>
+    * [Two mins paper](https://www.youtube.com/watch?v=u-0cQ-grXBQ)

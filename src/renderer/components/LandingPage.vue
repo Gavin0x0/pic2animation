@@ -9,7 +9,7 @@
           <div class="title">选择用于生成动画的图片</div>
            <p>五官清晰的正脸图片生成效果最佳</p>
         </div>
-        <div class="img-upload">
+        <div class="img-upload zoom-out">
           <input
             type="file"
             id="myimg"
@@ -112,7 +112,7 @@ export default {
     selectVideo (index, row) {
       this.currVideoId = index + 1
       console.log(index, row)
-      this.videopath = '../python/' + this.videoData[index].id + '.mp4'
+      this.videopath = '../python/Inputs/' + this.videoData[index].id + '.mp4'
       console.log(this.videopath)
     },
     // 图片选择组件
@@ -206,7 +206,11 @@ main {
 main > div {
   flex-basis: 50%;
 }
-
+.zoom-out img:hover{
+  cursor: pointer;  
+  transition: all 0.3s;
+	transform: scale(1.1);
+}
 .left-side {
   display: flex;
   flex-direction: column;
@@ -303,6 +307,7 @@ label img {
   margin-top: 20px;
   margin-bottom: 20px;
   width: 200px;
+  border-radius: 20px;
 }
 
 input button {

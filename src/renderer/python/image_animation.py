@@ -49,14 +49,19 @@ ap.add_argument("-v", "--input_video", required=False,
 
 args = vars(ap.parse_args())
 # 带时间的输出文件名 11_06_20_51_59_output.mp4
-filename = time.strftime("%m_%d_%H_%M_%S_output.mp4", time.localtime())
-print("[INFO]  正在加载模型和资源图像...")
+nowtime = time.strftime("%m_%d_%H_%M_%S", time.localtime())
+# 没有声音的生成视频
+filename = nowtime+'_output.mp4'
+# 带声音的最终视频
+finalname = nowtime+'_output-f.mp4'
+
+print("python: 正在加载模型和资源图像...")
 source_path = args['input_image']
 checkpoint_path = args['checkpoint']
 if args['input_video']:
     video_path = args['input_video']
 else:
-    print("[ERROR] 视频模板不存在!")
+    print("python: 视频模板不存在!")
 # 图像压缩
 source_image = imageio.imread(source_path)
 source_image = resize(source_image, (256, 256))[..., :3]
@@ -73,9 +78,9 @@ cpu = False
 # 如果存在视频路径就加载视频
 if video_path:
     cap = cv2.VideoCapture(video_path)
-    print("[INFO] 正在加载视频模板...")
+    print("python: 正在加载视频模板...")
 else:
-    print("[ERROR] 视频模板不存在!")
+    print("python: 视频模板不存在!")
 
 fps = cap.get(cv2.CAP_PROP_FPS)
 size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
@@ -132,3 +137,11 @@ with torch.no_grad():
     cv2.destroyAllWindows()
 video_add_mp3(file_name=currPath+'/output/'+filename,
               mp3_file=video_path.split('.')[0] + '.mp3')
+
+if os.path.exists(currPath+'/output/'+finalname):
+    if os.path.getsize(currPath+'/output/'+finalname)>1024*100:
+        print('python: finish')
+    else:
+        print('python: failed')
+else:
+    print('python: failed')

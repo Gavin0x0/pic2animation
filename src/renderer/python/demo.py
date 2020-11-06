@@ -11,7 +11,6 @@ from skimage.transform import resize
 from skimage import img_as_ubyte
 import torch
 from sync_batchnorm import DataParallelWithCallback
-
 from modules.generator import OcclusionAwareGenerator
 from modules.keypoint_detector import KPDetector
 from animate import normalize_kp
