@@ -9,10 +9,10 @@
 
 ```bash
 # 克隆这个仓库
-git clone https://github.com/electron/electron-quick-start
+git clone https://github.com/levi-oh/pic2animation.git
 
 # 进入项目文件夹
-cd electron-quick-start
+cd pic2animation
 
 # 安装依赖
 npm install

@@ -5,11 +5,10 @@
     <img id="logo" src="~@/assets/logo.png" alt="electron-vue" />
     <main>
       <div class="left-side">
-        <span class="title">
-          选择用于生成动画的图片
-          <h6>五官清晰的正脸图片生成效果最佳</h6>
-        </span>
-        
+        <div class="general">
+          <div class="title">选择用于生成动画的图片</div>
+           <p>五官清晰的正脸图片生成效果最佳</p>
+        </div>
         <div class="img-upload">
           <input
             type="file"
@@ -30,8 +29,8 @@
           选择用于生成动画的音乐模板
         </span>
         <div class="music-list">
-          <el-table  :border=true :show-header=false  :data="tableData">
-            <el-table-column align="center" width="130">
+          <el-table  :border=true :show-header=false  :data="videoData" :fit=true>
+            <el-table-column align="center" >
               <template slot-scope="scope">
                   <div slot="reference" class="name-wrapper">
                     <i class="el-icon-video-play"></i>
@@ -39,27 +38,26 @@
                   </div>
               </template>
             </el-table-column>
-            <el-table-column align="center" width="150">
+            <el-table-column align="center" >
               <template slot-scope="scope">
                 <el-button
                   size="mini"
-                  type="primary"
-                  @click="handleEdit(scope.$index, scope.row)">选择</el-button>
-                <el-button
-                  size="mini"
-                  type="danger"
-                  @click="handleDelete(scope.$index, scope.row)">X</el-button>
+                  :type="currVideoId==scope.row.id?'primary':'nomal'"
+                  @click="selectVideo(scope.$index, scope.row)">{{currVideoId==scope.row.id?'已选':'选择'}}</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
+        <br /><br />
+        <h4>{{'模板地址 : '+videopath}}</h4>
       </div>
       <div class="right-side">
         <div class="general">
           <div class="title">立即开始</div>
           <p>
-            阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭阿巴巴巴叭叭叭
+            视频生成速度由GPU性能决定，若环境中没有配置好CUDA则无法加速渲染，由GPU处理所需时长3-5分钟不等，若用CPU处理则需几小时。
           </p>
+          <br />
           <button
             @click="
               general
@@ -85,21 +83,24 @@ export default {
   components: { SystemInformation },
   data () {
     return {
+      currVideoId: 0,
       imgpath: 'null',
+      videopath: 'null',
       command: {
         output: '',
         err: '',
         closecode: 0,
         exitcode: 0
       },
-      tableData: [{
+      videoData: [{
         id: 1,
-        name: 'Unravel',
-        path: '  '
+        name: 'Unravel-女声'
       }, {
         id: 2,
-        name: 'Love',
-        path: 'null'
+        name: 'The spectre-女声'
+      }, {
+        id: 3,
+        name: '达拉崩吧'
       }]
     }
   },
@@ -107,11 +108,12 @@ export default {
     open (link) {
       this.$electron.shell.openExternal(link)
     },
-    handleEdit (index, row) {
+    // 选择视频模板
+    selectVideo (index, row) {
+      this.currVideoId = index + 1
       console.log(index, row)
-    },
-    handleDelete (index, row) {
-      console.log(index, row)
+      this.videopath = '../python/' + this.videoData[index].id + '.mp4'
+      console.log(this.videopath)
     },
     // 图片选择组件
     chooseFile (e) {
@@ -133,15 +135,15 @@ export default {
     general () {
       const path = require('path')
       // Python脚本和资源模型的路径
+      let targetVideoPath = path.join(__dirname, this.videopath)
       let target = path.join(__dirname, '../python/image_animation.py')
-      let myvidoe = path.join(__dirname, '../python/1.mp4')
       let checkpoints = path.join(__dirname, '../python/checkpoints/vox-cpk.pth.tar')
       console.log(target)
       // 开启子进程
       var childProcess = require('child_process')
       const process = childProcess.exec('cmd', {stdio: 'pipe'})
       // 编写命令
-      let command = 'python ' + target + ' -i ' + this.imgpath + ' -c ' + checkpoints + ' -v ' + myvidoe
+      let command = 'python ' + target + ' -i ' + this.imgpath + ' -c ' + checkpoints + ' -v ' + targetVideoPath
       process.stdin.write('activate base\n')
       process.stdin.write(command + '\n')
       process.stdin.end()
@@ -208,7 +210,7 @@ main > div {
 .left-side {
   display: flex;
   flex-direction: column;
-  width: 30px;
+  max-width: 400px;
   padding-right: 5px;
 }
 
@@ -216,7 +218,7 @@ main > div {
   display: flex;
   flex-direction: column;
   margin-right: 5%;
-  
+  max-width: 400px;
 }
 .right-side {
   display: flex;
@@ -227,7 +229,6 @@ main > div {
 
 .music-list{
   margin-top: 20px;
-  width: 282px;
 }
 
 .welcome {
@@ -238,7 +239,7 @@ main > div {
 
 .title {
   color: #2c3e50;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: bold;
   margin-bottom: 6px;
 }
@@ -254,7 +255,8 @@ main > div {
 }
 
 .general button {
-  font-size: 0.8em;
+  font-size: 1.2em;
+  font-family: 'Noto Sans SC', sans-serif;
   cursor: pointer;
   outline: none;
   padding: 0.75em 2em;
@@ -268,6 +270,7 @@ main > div {
 }
 .img-upload button {
   font-size: 0.8em;
+  font-family: 'Noto Sans SC', sans-serif;
   cursor: pointer;
   outline: none;
   padding: 0.75em 2em;
