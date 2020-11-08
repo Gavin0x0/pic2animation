@@ -4,11 +4,17 @@
 > 
 ## 界面部分
  - 界面用了elementUI的部分组件，好看即正义🤪  
-![运行界面.png](https://tva1.sinaimg.cn/large/007e6d0Xgy1gkg0e7ozozj31db0ljgr8.jpg)
+
+![运行界面.png](https://tva1.sinaimg.cn/large/007e6d0Xgy1gki5hx487vj315q0nmgr7.jpg)
+ - 运行截图  
+
+![运行截图.png](https://tva1.sinaimg.cn/large/007e6d0Xgy1gki5lfj02vj315n0npahm.jpg)
+## Python代码部分
+ - 基于Jack Cui大佬的代码进行修改 
+ - 配置方法参考 [博客地址](https://cuijiahua.com/blog/2020/08/dl-25.html)
 
 ## 食用方法
-
- 你的电脑需要安装好 [Git](https://git-scm.com) 和 [Node.js](https://nodejs.org/en/download/) (其中包括了 [npm](http://npmjs.com))   
+ - 你的电脑还需要安装好 [Git](https://git-scm.com) 和 [Node.js](https://nodejs.org/en/download/) (其中包括了 [npm](http://npmjs.com))   
  在命令行中运行：
 
 ```bash
@@ -27,8 +33,6 @@ npm run dev
 # 打包为electron应用
 npm run build
 ```
-
-
 
 ## Electron相关学习资料
 

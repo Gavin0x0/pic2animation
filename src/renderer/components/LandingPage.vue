@@ -107,7 +107,10 @@ export default {
         name: 'The spectre-女声'
       }, {
         id: 3,
-        name: '达拉崩吧'
+        name: '九九八一-女声'
+      }, {
+        id: 4,
+        name: '芒种-女声'
       }]
     }
   },
@@ -205,7 +208,7 @@ export default {
         } else {
           this.progress = 100
           this.progressStatus = 'exception'
-          this.pythonStatus = '生成失败！'
+          this.pythonStatus = '生成失败！请检查环境配置'
         }
       })
     },
