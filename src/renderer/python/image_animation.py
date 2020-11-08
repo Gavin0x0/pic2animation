@@ -55,13 +55,13 @@ filename = nowtime+'_output.mp4'
 # 带声音的最终视频
 finalname = nowtime+'_output-f.mp4'
 
-print("python: 正在加载模型和资源图像...")
+print(";python; Loading image and checkpoint...")
 source_path = args['input_image']
 checkpoint_path = args['checkpoint']
 if args['input_video']:
     video_path = args['input_video']
 else:
-    print("python: 视频模板不存在!")
+    print(";python; video not exist!")
 # 图像压缩
 source_image = imageio.imread(source_path)
 source_image = resize(source_image, (256, 256))[..., :3]
@@ -82,9 +82,9 @@ cpu = False
 # 如果存在视频路径就加载视频
 if video_path:
     cap = cv2.VideoCapture(video_path)
-    print("python: 正在加载视频模板...")
+    print(";python; Loading video...")
 else:
-    print("python: 视频模板不存在!")
+    print(";python; video not exist!")
 
 fps = cap.get(cv2.CAP_PROP_FPS)
 size = (int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
@@ -144,11 +144,9 @@ video_add_mp3(file_name=currPath+'/output/'+filename,
 
 if os.path.exists(currPath+'/output/'+finalname):
     if os.path.getsize(currPath+'/output/'+finalname)>1024*100:
-        print('python:finish')
-        # 返回一个视频路径
-        time.sleep(2)
-        print('finalvideo:'+asbPath+'/../output/'+finalname)
+        # 成功则回一个视频路径
+        print(';finalvideo;'+asbPath+'/../output/'+finalname)
     else:
-        print('python: failed')
+        print(';python; failed')
 else:
-    print('python: failed')
+    print(';python; failed')

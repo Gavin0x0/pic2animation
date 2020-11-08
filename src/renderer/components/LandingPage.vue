@@ -20,9 +20,8 @@
           <label for="myimg">
             <img src="~@/assets/face.png" alt="img" />
           </label>
-          
         </div>
-        <system-information></system-information>
+        <!-- <system-information></system-information> -->
       </div>
       <div class="middle-side">
         <span class="title">
@@ -60,6 +59,7 @@
           <br />
         </div>
         <div class="output-container">
+        <video v-show="iffinished" :src="videopath" width="300" height="auto" controls >您的电脑不支持video标签</video>
         <button
             @click="
               general
@@ -67,8 +67,9 @@
           >
             开始生成</button
           ><br /><br />
-        <el-progress v-show="ifrunning" type="circle" :percentage="progress" :status="progressStatus" :show-text="true"></el-progress>
-        <video v-show="iffinished" :src="videopath" width="200" height="auto" controls >您的电脑不支持video标签</video>
+        <el-progress v-show="ifrunning" type="circle" :percentage="progress" :status="progressStatus" ></el-progress>
+        <br /><br />
+        <h3 v-show="ifrunning">{{pythonStatus}}</h3>
         </div>
         
       </div>
@@ -84,10 +85,11 @@ export default {
   components: { SystemInformation },
   data () {
     return {
+      pythonStatus: '生成中...',
       ifrunning: false,
       iffinished: false,
       progress: 0,
-      progressStatus: ' ',
+      progressStatus: 'warning',
       currVideoId: 0,
       imgpath: 'null',
       videopath: 'D:' + '\\360MoveData\\Users\\chen6\\Desktop\\vue-electron\\pic2animation\\src\\renderer\\python\\Inputs\\1.mp4',
@@ -138,12 +140,16 @@ export default {
     },
     // 控制台调用Python
     general () {
+      this.progress = 0
+      this.progressStatus = 'warning'
+      this.pythonStatus = '生成中...'
       this.ifrunning = true
+      let autoloading = setInterval(() => { if (this.progress < 90) { this.progress += 1 } }, 3333)// 设置个五分钟定时器，缓解焦虑
       const path = require('path')
       // Python脚本和资源模型的路径
       let targetVideoPath = path.join(__dirname, this.videopath)
       let target = path.join(__dirname, '../python/image_animation.py')
-      let testTarget = path.join(__dirname, '../python/test.py')
+      // let testTarget = path.join(__dirname, '../python/test.py')
       let checkpoints = path.join(__dirname, '../python/checkpoints/vox-cpk.pth.tar')
       console.log(target)
       // 开启子进程
@@ -151,30 +157,33 @@ export default {
       const process = childProcess.exec('cmd', {stdio: 'pipe'})
       // 编写命令
       let command = 'python ' + target + ' -i ' + this.imgpath + ' -c ' + checkpoints + ' -v ' + targetVideoPath
-      let testCmd = 'python ' + testTarget
+      // let testCmd = 'python ' + testTarget
       process.stdin.write('activate base\n')
-      process.stdin.write(testCmd + '\n')
       process.stdin.write(command + '\n')
       process.stdin.end()
       console.log(command)
       // 获取控制台输出
       process.stdout.on('data', (out) => {
         console.log('out:' + out)
-        console.log('推了一下进度条！')
-        this.progress += 5
+        this.progress += 3
         this.commandMsg.output = out
-        let msg = out.split(':')
-        if (msg[0] === 'python') {
-          if (msg[1] === 'finish') {
-            // 视频生成完成
-            this.progress = 100
-            this.progressStatus = 'success'
-            this.iffinished = true
+        let msg = out.split(';')
+        for (var i = 0; i < msg.length; i++) {
+          switch (msg[i]) {
+            // 视频生成完成，获取到生成的视频的路径
+            case 'finalvideo':
+              this.videopath = msg[i + 1]
+              this.pythonStatus = '生成成功！'
+              this.iffinished = true
+              this.ifrunning = false
+              break
+            case 'python':
+              this.pythonStatus = msg[i + 1]
+              break
+            // 获取Python返回的信息
+            default:
+              break
           }
-        }
-        // 获取到生成的视频的路径
-        if (msg[0] === 'finalvideo') {
-          this.videopath = msg[1] + ':' + msg[2]
         }
       })
       process.stderr.on('data', (err) => {
@@ -186,15 +195,24 @@ export default {
         this.commandMsg.closecode = closecode
       })
       process.on('exit', (code) => {
+        // 控制台退出后检测完成状态
+        clearInterval(autoloading)
         console.log('exit code : ' + code)
         this.commandMsg.exitcode = code
+        if (this.iffinished === true) {
+          this.progress = 100
+          this.progressStatus = 'success'
+        } else {
+          this.progress = 100
+          this.progressStatus = 'exception'
+          this.pythonStatus = '生成失败！'
+        }
       })
     },
     playVideo () {
       var vdo = document.getElementById('videoPlay')
       vdo.play()
     }
-
   }
 }
 </script>
@@ -305,6 +323,11 @@ main > div {
 .general p {
   color: black;
   margin-bottom: 10px;
+}
+
+.output-container video {
+  border-radius: 15px;
+  margin-bottom: 20px;
 }
 
 .output-container button {
