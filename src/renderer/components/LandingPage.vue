@@ -366,7 +366,7 @@ label img {
   height: auto;
   margin-top: 20px;
   margin-bottom: 20px;
-  width: 200px;
+  width: 300px;
   border-radius: 20px;
 }
 
