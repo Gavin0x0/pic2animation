@@ -74,6 +74,13 @@
         
       </div>
     </main>
+    <el-divider content-position="left">控制台输出</el-divider>
+    <el-input
+      type="textarea"
+      :rows="10"
+      placeholder="控制台输出"
+      v-model="textarea">
+    </el-input>
   </div>
 </template>
 <script src="./video_tool.js"></script>
@@ -93,6 +100,7 @@ export default {
       currVideoId: 0,
       imgpath: 'null',
       videopath: 'D:' + '\\360MoveData\\Users\\chen6\\Desktop\\vue-electron\\pic2animation\\src\\renderer\\python\\Inputs\\1.mp4',
+      textarea: '',
       commandMsg: {
         output: '',
         err: '',
@@ -170,6 +178,7 @@ export default {
         console.log('out:' + out)
         this.progress += 3
         this.commandMsg.output = out
+        this.textarea = this.textarea + '\n' + out
         let msg = out.split(';')
         for (var i = 0; i < msg.length; i++) {
           switch (msg[i]) {
@@ -192,6 +201,7 @@ export default {
       process.stderr.on('data', (err) => {
         // console.log('err:' + err)
         this.commandMsg.err = err
+        this.textarea += '\n' + err
       })
       process.on('close', (closecode) => {
         console.log('close code : ' + closecode)
